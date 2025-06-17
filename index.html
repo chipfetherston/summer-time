@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Summer Time Tracker</title>
+</head>
+<body>
+  <h1>Summer Time Tracker</h1>
+  <form action="/submit" method="post">
+    <label>Name:
+      <select name="user" id="user" required>
+        <option value="">--Select User--</option>
+        <option value="Ollie">Ollie</option>
+        <option value="Charlotte">Charlotte</option>
+      </select>
+    </label><br>
+
+    <label>Date:
+      <input type="date" name="date" id="date" required min="2025-06-15" max="2025-08-31">
+    </label><br>
+
+    <label>Hours Worked:
+      <input type="number" step="0.1" name="hours" id="hours" required>
+    </label><br>
+
+    <label>Notes:<br>
+      <textarea name="notes" id="notes" rows="4" cols="40"></textarea>
+    </label><br>
+
+    <button type="submit">Save Entry</button>
+  </form>
+
+  <h2>Previous Entries</h2>
+  <div id="entries"></div>
+
+  <script>
+    const userSelect = document.getElementById('user');
+    const dateInput = document.getElementById('date');
+
+    function updateForm() {
+      const user = userSelect.value;
+      const date = dateInput.value;
+      if (!user || !date) return;
+
+      fetch(`/entry/${user}/${date}`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('hours').value = data.hours || '';
+          document.getElementById('notes').value = data.notes || '';
+        });
+    }
+
+    userSelect.addEventListener('change', updateForm);
+    dateInput.addEventListener('change', updateForm);
+  </script>
+</body>
+</html>
